@@ -12,7 +12,7 @@ public interface JobAdvertisementDao extends JpaRepository<JobAdvertisement, Int
 	List<JobAdvertisement> getAllByActivationStatusTrue();
 	List<JobAdvertisement> getAllByActivationStatusTrue(Sort sort);
 	
-	@Query("From JobAdvertisement where activationStatus = true order by expiration_date asc")
+	@Query("From JobAdvertisement where activationStatus = true and employer.id = :id order by expiration_date asc")
 	List<JobAdvertisement> getAllByEmployerId(int id);
 	
 	List<JobAdvertisement> getAllByEmployer_CompanyName(String companyName);
