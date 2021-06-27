@@ -4,6 +4,7 @@ import java.util.List;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import kodlama.io.hrms.business.abstracts.JobAdvertisementService;
 import kodlama.io.hrms.core.utilities.results.DataResult;
 import kodlama.io.hrms.core.utilities.results.Result;
 import kodlama.io.hrms.entities.concretes.JobAdvertisement;
+import kodlama.io.hrms.entities.dtos.JobAdvertFilterOption;
 import kodlama.io.hrms.entities.dtos.JobAdvertisementDto;
 
 @RestController
@@ -72,8 +74,18 @@ public class JobAdvertisementsController {
 	}
 	
 	@PostMapping("/delete")
-	public Result delete(@RequestBody JobAdvertisement jobAdvertisement) {
-		return this.jobAdvertisementService.delete(jobAdvertisement);
+	public Result delete(@RequestParam int id) {
+		return this.jobAdvertisementService.delete(id);
+	}
+	
+	@GetMapping("/getActiveJobsByPage")
+	public DataResult<Page<JobAdvertisement>> getActiveJobsByPage(@RequestParam int pageNo, @RequestParam int pageSize) {
+		return this.jobAdvertisementService.getActiveJobsByPage(pageNo, pageSize);
+	}
+	
+	@PostMapping("/getAllByFilteredAndPaged")
+	public DataResult<List<JobAdvertisement>> getAllByFilteredAndPaged(@RequestParam int pageNo, @RequestParam int pageSize, @RequestBody JobAdvertFilterOption filterOption) {
+		return this.jobAdvertisementService.getAllByFilteredAndPaged(pageNo, pageSize, filterOption);
 	}
 
 }

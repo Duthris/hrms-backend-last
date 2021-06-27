@@ -71,7 +71,7 @@ public class EmployerManager implements EmployerService {
 		
 		else {		
 			employerDao.save(employer);
-			eMailService.sendEMail("Verification E-Mail Demo");
+			eMailService.sendEMail("Verification E-Mail Sent!");
 			return new SuccessResult("Employer is succesfully registered. Please check your E-Mail to verify your account.");
 		}
 	}

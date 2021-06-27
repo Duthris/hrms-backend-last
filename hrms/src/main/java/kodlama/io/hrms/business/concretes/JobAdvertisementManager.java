@@ -1,9 +1,14 @@
 package kodlama.io.hrms.business.concretes;
 
+import java.time.DayOfWeek;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +26,7 @@ import kodlama.io.hrms.dataAccess.abstracts.JobPositionDao;
 import kodlama.io.hrms.dataAccess.abstracts.WorkingMethodDao;
 import kodlama.io.hrms.dataAccess.abstracts.WorkingTimeDao;
 import kodlama.io.hrms.entities.concretes.JobAdvertisement;
+import kodlama.io.hrms.entities.dtos.JobAdvertFilterOption;
 import kodlama.io.hrms.entities.dtos.JobAdvertisementDto;
 
 @Service
@@ -191,9 +197,22 @@ public class JobAdvertisementManager implements JobAdvertisementService {
 	}
 
 	@Override
-	public Result delete(JobAdvertisement jobAdvertisement) {
-		this.jobAdvertisementDao.delete(jobAdvertisement);
+	public Result delete(int id) {
+		this.jobAdvertisementDao.deleteById(id);
 		return new SuccessResult("Successfully Deleted!");
+	}
+
+	@Override
+	public DataResult<Page<JobAdvertisement>> getActiveJobsByPage(int pageNo, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+		return new SuccessDataResult<Page<JobAdvertisement>>(this.jobAdvertisementDao.getActiveJobsByPage(pageable));
+	}
+
+	@Override
+	public DataResult<List<JobAdvertisement>> getAllByFilteredAndPaged(int pageNo, int pageSize, JobAdvertFilterOption filterOption) {
+		Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+		return new SuccessDataResult<List<JobAdvertisement>>
+		(this.jobAdvertisementDao.getFilteringAndPage(filterOption, pageable).getContent(), this.jobAdvertisementDao.getFilteringAndPage(filterOption, pageable).getTotalElements() + "");
 	}
 
 }
