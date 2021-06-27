@@ -9,8 +9,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -18,6 +22,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="favorites")
+@EqualsAndHashCode(callSuper = false)
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","jobAdvertisement"})
 public class JobAdvertisementFavorite {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +32,7 @@ public class JobAdvertisementFavorite {
 	
 	@ManyToOne
 	@JoinColumn(name="candidate_id")
+	@JsonIgnore
 	private Candidate candidate;
 	
 	@ManyToOne

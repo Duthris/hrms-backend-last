@@ -61,6 +61,12 @@ public class JobAdvertisementFavoriteManager implements JobAdvertisementFavorite
 		this.jobAdvertisementFavoriteDao.save(jobAdvertisementFavorite);
 		return new SuccessResult("The Advertisement is added to favorites.");
 	}
+
+	@Override
+	public Result delete(int id) {
+		this.jobAdvertisementFavoriteDao.deleteById(id);
+		return new SuccessResult("The Advertisement is successfully deleted from favorites.");
+	}
 	
 
 }

@@ -37,5 +37,10 @@ public class JobAdvertisementFavoriteController {
 	public Result add(@RequestParam int candidateId, @RequestParam int jobAdvertisementId) {
 		return this.jobAdvertisementFavoriteService.add(candidateId, jobAdvertisementId);
 	}
+	
+	@PostMapping("/delete")
+	public Result delete(@RequestParam int id) {
+		return this.jobAdvertisementFavoriteService.delete(id);
+	}
 
 }
