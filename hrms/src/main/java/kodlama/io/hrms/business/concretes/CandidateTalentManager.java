@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import kodlama.io.hrms.business.abstracts.CandidateTalentService;
 import kodlama.io.hrms.core.utilities.results.DataResult;
+import kodlama.io.hrms.core.utilities.results.ErrorResult;
 import kodlama.io.hrms.core.utilities.results.Result;
 import kodlama.io.hrms.core.utilities.results.SuccessDataResult;
 import kodlama.io.hrms.core.utilities.results.SuccessResult;
@@ -59,6 +60,16 @@ public class CandidateTalentManager implements CandidateTalentService {
 		this.candidateTalentDao.save(candidateTalent);
 		
 		return new SuccessResult("Talent is added to Cv!");
+	}
+
+	@Override
+	public Result delete(int talentId) {
+		if (!this.candidateTalentDao.existsById(talentId)) {
+			return new ErrorResult("Invalid Talent Id!");
+		}
+		
+		this.candidateTalentDao.deleteById(talentId);
+		return new SuccessResult("Talent is deleted from Cv!");
 	}
 
 }

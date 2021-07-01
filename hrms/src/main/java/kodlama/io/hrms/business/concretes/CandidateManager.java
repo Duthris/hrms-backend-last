@@ -21,8 +21,10 @@ import kodlama.io.hrms.core.utilities.results.SuccessResult;
 import kodlama.io.hrms.dataAccess.abstracts.CandidateDao;
 import kodlama.io.hrms.dataAccess.abstracts.UserDao;
 import kodlama.io.hrms.entities.concretes.Candidate;
+import kodlama.io.hrms.entities.concretes.Employee;
 import kodlama.io.hrms.entities.concretes.MailVerification;
 import kodlama.io.hrms.entities.concretes.User;
+import kodlama.io.hrms.entities.dtos.CandidatePersonalInfoDto;
 import net.bytebuddy.asm.Advice.This;
 
 
@@ -135,6 +137,30 @@ public class CandidateManager implements CandidateService {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public Result update(CandidatePersonalInfoDto candidatePersonalInfoDto) {
+		Candidate candidate = this.candidateDao.getOne(candidatePersonalInfoDto.getId());	
+		
+		if (candidatePersonalInfoDto.getFirstName() != null) {
+			candidate.setFirstName(candidatePersonalInfoDto.getFirstName());
+		}
+		
+		if (candidatePersonalInfoDto.getLastName() != null) {
+			candidate.setLastName(candidatePersonalInfoDto.getLastName());
+		}
+		
+		if (candidatePersonalInfoDto.getEmail() != null) {
+			candidate.setEmail(candidatePersonalInfoDto.getBirthYear());
+		}
+		
+		if (candidatePersonalInfoDto.getBirthYear() != null) {
+			candidate.setBirthYear(candidatePersonalInfoDto.getBirthYear());
+		}
+		
+		this.candidateDao.save(candidate);
+		return new SuccessResult("Candidate is updated!");
 	}
 
 }

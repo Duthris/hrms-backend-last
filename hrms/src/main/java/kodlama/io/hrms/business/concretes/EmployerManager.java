@@ -1,12 +1,10 @@
 package kodlama.io.hrms.business.concretes;
 
 import java.util.regex.*;
-
-
+import java.time.LocalDate;
 import java.util.List;
 
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import kodlama.io.hrms.business.abstracts.EmployerService;
@@ -19,10 +17,12 @@ import kodlama.io.hrms.core.utilities.results.ErrorResult;
 import kodlama.io.hrms.core.utilities.results.Result;
 import kodlama.io.hrms.core.utilities.results.SuccessDataResult;
 import kodlama.io.hrms.core.utilities.results.SuccessResult;
+import kodlama.io.hrms.dataAccess.abstracts.EmployeeDao;
 import kodlama.io.hrms.dataAccess.abstracts.EmployerDao;
+import kodlama.io.hrms.dataAccess.abstracts.EmployerUpdateDao;
 import kodlama.io.hrms.dataAccess.abstracts.UserDao;
 import kodlama.io.hrms.entities.concretes.Employer;
-import kodlama.io.hrms.entities.concretes.User;
+import kodlama.io.hrms.entities.concretes.EmployerUpdate;
 
 @Service
 public class EmployerManager implements EmployerService {
@@ -31,14 +31,19 @@ public class EmployerManager implements EmployerService {
 	private UserService userService;
 	private UserDao userDao;
 	private EMailService eMailService;
+	private EmployerUpdateDao employerUpdateDao;
+	private EmployeeDao employeeDao;
 
 	
 	@Autowired
-	public EmployerManager(EmployerDao employerDao, UserService userService, UserDao userDao, EMailService eMailService) {
+	public EmployerManager(EmployerDao employerDao, UserService userService, UserDao userDao, 
+			EMailService eMailService, EmployerUpdateDao employerUpdateDao, EmployeeDao employeeDao) {
 		this.employerDao = employerDao;
 		this.userService = userService;
 		this.userDao = userDao;	
 		this.eMailService = eMailService;
+		this.employerUpdateDao = employerUpdateDao;
+		this.employeeDao = employeeDao;
 
 	}
 
@@ -118,6 +123,13 @@ public class EmployerManager implements EmployerService {
 		}
 		return false; 
 	}
+	
+	  private final String EMAIL_PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+.(com|org|net|edu|gov|mil|biz|info|mobi)(.[A-Z]{2})?$";
+
+	    public boolean isEmailValid(String emailInput) {
+	        Pattern pattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
+	        return pattern.matcher(emailInput).find();
+	    }
 
 	@Override
 	public DataResult<Employer> getById(int id) {
@@ -126,6 +138,64 @@ public class EmployerManager implements EmployerService {
 		}
 		
 		return new SuccessDataResult<Employer>(this.employerDao.getOne(id), "Searched employer is found!");
+	}
+
+	@Override
+	public Result update(EmployerUpdate employerUpdate) {
+		employerUpdate.setId(0);
+		employerUpdate.setCreatedDate(LocalDate.now());
+		employerUpdate.setEmployeeId(null);
+		
+		if(employerUpdate.getCompanyName().length()<1) {
+			return new ErrorResult("Company name must be longer than 2 character!");
+		}
+		
+		else if (employerUpdate.getPhoneNumber().length() != 11) {
+			return new ErrorResult("Invalid phone number!");
+		}
+		
+		else if (!isEmailValid(employerUpdate.getEmail())) {
+			return new ErrorResult("Invalid E-mail format!");
+		}
+		
+		else if (!this.employerDao.existsById(employerUpdate.getEmployerId())) {
+			return new ErrorResult("Invalid Employer Id");
+		}
+		
+		Employer employer = this.employerDao.getOne(employerUpdate.getEmployerId());
+		this.employerUpdateDao.save(employerUpdate);
+		
+		employer.setWaitingUpdate(true);
+		this.employerDao.save(employer);
+		
+		return new SuccessResult("Updation request is successfully sent! Waiting for confirmation to make changes on.");
+	}
+
+	@Override
+	public Result verifyUpdate(int employerUpdateId, int employeeId) {
+		if (!this.employerUpdateDao.existsById(employerUpdateId)) {
+			return new ErrorResult("Inavlid updation request!");
+		}
+		
+		else if (!this.employeeDao.existsById(employeeId)) {
+			return new ErrorResult("Invalid Employee Id!");
+		}
+		
+		EmployerUpdate employerUpdate = this.employerUpdateDao.getOne(employerUpdateId);
+		Employer employer = this.employerDao.getOne(employerUpdate.getEmployerId());
+		employerUpdate.setVerified(true);
+		employerUpdate.setEmployeeId(employeeId);
+		employerUpdate.setVerifyDate(LocalDate.now());
+		this.employerUpdateDao.save(employerUpdate);
+		
+		employer.setEmail(employerUpdate.getEmail());
+		employer.setCompanyName(employer.getCompanyName());
+		employer.setPhoneNumber(employerUpdate.getPhoneNumber());
+		employer.setWebSite(employerUpdate.getWebSite());
+		employer.setWaitingUpdate(false);
+		this.employerDao.save(employer);
+		
+		return new SuccessResult("Employer infos are successfully Updated!");
 	}
 	
 }

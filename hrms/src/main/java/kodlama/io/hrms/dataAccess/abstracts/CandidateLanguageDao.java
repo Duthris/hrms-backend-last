@@ -9,5 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CandidateLanguageDao extends JpaRepository<CandidateLanguage, Integer>{
 	
 	List<CandidateLanguage> getByCandidateCvId(int id);
+	
+	List<CandidateLanguage> findByCandidateCvId(int id);
 
 }

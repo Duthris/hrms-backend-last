@@ -11,5 +11,7 @@ public interface CandidateJobExperienceDao extends JpaRepository<CandidateJobExp
 	
 	@Query("From CandidateJobExperience cj where candidates_cv_id =:id order by starting_date, is_quited desc")
 	List<CandidateJobExperience> getCandidateJobExperienceByStartingDateDesc(int id);
+	
+	List<CandidateJobExperience> findByCandidateCvId(int id);
 
 }

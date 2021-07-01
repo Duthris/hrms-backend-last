@@ -23,4 +23,12 @@ public interface CandidateCvService {
 	DataResult<CandidateCv> update(CandidateCv candidateCv);
 	
 	DataResult<CandidateCv> getByCvId(int id);
+	
+	Result updateGithub(String githubLink, int cvId);
+	Result deleteGithub(int cvId);
+	
+	Result updateLinkedin(String linkedinLink, int cvId);
+	Result deleteLinkedin(int cvId);
+	
+	Result updateCoverLetter(String coverLetter, int cvId);
 }

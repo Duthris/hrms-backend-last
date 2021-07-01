@@ -14,5 +14,7 @@ public interface CandidateTalentService {
 	DataResult<List<CandidateTalent>> getByCandidateCvId(int id);
 	
 	Result addTalentToCv(Talent talent, int candidateId);
+	
+	Result delete(int talentId);
 
 }

@@ -16,6 +16,7 @@ import kodlama.io.hrms.core.utilities.results.DataResult;
 import kodlama.io.hrms.core.utilities.results.Result;
 import kodlama.io.hrms.entities.concretes.CandidateLanguage;
 import kodlama.io.hrms.entities.concretes.Language;
+import kodlama.io.hrms.entities.dtos.LanguageAddDto;
 
 @RestController
 @RequestMapping("/api/candidatesLanguages")
@@ -44,5 +45,14 @@ public class CandidatesLanguagesController {
 	public Result addLanguageToCv(@RequestBody Language language, @RequestParam int candidateId) {
 		return this.candidateLanguageService.addLanguageToCv(language, candidateId);
 	}
-
+	
+	@PostMapping("/add")
+	public Result add(@RequestBody LanguageAddDto languageAddDto) {
+		return this.candidateLanguageService.add(languageAddDto);
+	}
+	
+	@PostMapping("/delete")
+	public Result delete(@RequestParam int languageId) {
+		return this.candidateLanguageService.delete(languageId);
+	}
 }

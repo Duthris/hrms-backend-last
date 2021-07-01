@@ -8,6 +8,7 @@ import kodlama.io.hrms.core.utilities.results.Result;
 import kodlama.io.hrms.entities.concretes.CandidateCv;
 import kodlama.io.hrms.entities.concretes.CandidateSchool;
 import kodlama.io.hrms.entities.concretes.Talent;
+import kodlama.io.hrms.entities.dtos.SchoolAddDto;
 
 public interface CandidateSchoolService {
 	
@@ -17,7 +18,8 @@ public interface CandidateSchoolService {
 	
 	DataResult<CandidateSchool> update(CandidateSchool candidateSchool);
 	
-	Result add(CandidateSchool candidateSchool);
+	Result add(SchoolAddDto schoolAddDto);
+	Result delete(int id);
 	
 	DataResult<List<CandidateSchool>> orderCandidateSchoolsByGraduationDateDesc(int id);
 }

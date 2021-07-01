@@ -19,6 +19,7 @@ import kodlama.io.hrms.business.abstracts.CandidateSchoolService;
 import kodlama.io.hrms.core.utilities.results.DataResult;
 import kodlama.io.hrms.core.utilities.results.Result;
 import kodlama.io.hrms.entities.concretes.CandidateSchool;
+import kodlama.io.hrms.entities.dtos.SchoolAddDto;
 
 @RestController
 @RequestMapping("/api/candidatesSchools")
@@ -48,13 +49,18 @@ public class CandidatesSchoolsController {
 	}
 	
 	@PostMapping("/add")
-	public Result add(@RequestBody CandidateSchool candidateSchool) {
-		return this.candidateSchoolService.add(candidateSchool);
+	public Result add(@RequestBody SchoolAddDto schoolAddDto) {
+		return this.candidateSchoolService.add(schoolAddDto);
 	}
 	
 	@GetMapping("/getCandidateSchoolsByGraduationDateDesc")
 	public DataResult<List<CandidateSchool>> orderCandidateSchoolsByGraduationDateDesc(int id) {
 		return this.candidateSchoolService.orderCandidateSchoolsByGraduationDateDesc(id);
+	}
+	
+	@PostMapping("/delete")
+	public Result delete(int id) {
+		return this.candidateSchoolService.delete(id);
 	}
 
 }

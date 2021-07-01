@@ -2,7 +2,10 @@ package kodlama.io.hrms.api.controllers;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,5 +45,10 @@ public class CandidatesTalentsController {
 		return this.candidateTalentService.addTalentToCv(talent, candidateId);
 	}
 	
+	@PostMapping("/delete")
+	public Result delete(@RequestParam int talentId) {
+		System.out.println("asdasd");
+		return this.candidateTalentService.delete(talentId);
+	}
 	
 }

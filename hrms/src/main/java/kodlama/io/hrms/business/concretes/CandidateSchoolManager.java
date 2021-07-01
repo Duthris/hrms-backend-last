@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import kodlama.io.hrms.business.abstracts.CandidateSchoolService;
 import kodlama.io.hrms.core.utilities.results.DataResult;
 import kodlama.io.hrms.core.utilities.results.ErrorDataResult;
+import kodlama.io.hrms.core.utilities.results.ErrorResult;
 import kodlama.io.hrms.core.utilities.results.Result;
 import kodlama.io.hrms.core.utilities.results.SuccessDataResult;
 import kodlama.io.hrms.core.utilities.results.SuccessResult;
@@ -19,6 +20,7 @@ import kodlama.io.hrms.entities.concretes.Candidate;
 import kodlama.io.hrms.entities.concretes.CandidateCv;
 import kodlama.io.hrms.entities.concretes.CandidateSchool;
 import kodlama.io.hrms.entities.concretes.CandidateTalent;
+import kodlama.io.hrms.entities.dtos.SchoolAddDto;
 
 @Service
 public class CandidateSchoolManager implements CandidateSchoolService {
@@ -71,10 +73,33 @@ public class CandidateSchoolManager implements CandidateSchoolService {
 	}
 
 	@Override
-	public Result add(CandidateSchool candidateSchool) {
-		candidateSchoolDao.save(candidateSchool);
+	public Result add(SchoolAddDto schoolAddDto) {
+		if (!this.candidateCvDao.existsById(schoolAddDto.getCvId())) {
+			return new ErrorResult("Invalid cv id!");
+		}
 		
-		return new SuccessResult("School is successfully added!");
+		else if (schoolAddDto.getSchoolName().length()<=1) {
+			return new ErrorResult("School Name cannot be less than 1 charcater!");
+		}
+		
+		else if (schoolAddDto.getDepartment().length()<=1) {
+			return new ErrorResult("Department cannot be less than 1 character!");
+		}
+		
+		else if (schoolAddDto.getStartingDate()==null) {
+			return new ErrorResult("Starting date cannot be empty!");
+		}
+		
+		CandidateSchool school = new CandidateSchool();
+		school.setCandidateCv(this.candidateCvDao.getOne(schoolAddDto.getCvId()));
+		school.setSchoolName(schoolAddDto.getSchoolName());
+		school.setDepartment(schoolAddDto.getDepartment());
+		school.setStartingDate(schoolAddDto.getStartingDate());
+		school.setGraduationDate(schoolAddDto.getGraduationDate());
+		school.setGraduated(schoolAddDto.isGraduated());
+		
+		this.candidateSchoolDao.save(school);
+		return new SuccessResult("School is added to cv!");
 	}
 
 	@Override
@@ -86,6 +111,16 @@ public class CandidateSchoolManager implements CandidateSchoolService {
 		
 		return new ErrorDataResult<List<CandidateSchool>>
 		("Invalid CV ID!");
+	}
+
+	@Override
+	public Result delete(int id) {
+		if (!this.candidateSchoolDao.existsById(id)) {
+			return new ErrorResult("Invalid School Id!");
+		}
+		
+		this.candidateSchoolDao.deleteById(id);
+		return new SuccessResult("School is removed!");
 	}
 
 }

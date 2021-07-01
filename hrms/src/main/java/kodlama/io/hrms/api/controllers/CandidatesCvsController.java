@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,7 +51,7 @@ public class CandidatesCvsController {
 		return this.candidateCvService.getByCandidateId(id);
 	}
 	
-	@PostMapping("/update")
+	@PutMapping("/update")
 	public DataResult<CandidateCv> update(@RequestBody CandidateCv candidateCv) {
 		return this.candidateCvService.update(candidateCv);
 	}
@@ -60,5 +61,29 @@ public class CandidatesCvsController {
 		return this.candidateCvService.getByCvId(id);
 	}
 	
-
+	@PutMapping("/updateGithub")
+	public Result updateGithub(@RequestParam String githubLink, @RequestParam int cvId) {
+		return this.candidateCvService.updateGithub(githubLink, cvId);
+	}
+	
+	@PutMapping("/deleteGithub")
+	public Result deleteGithub(@RequestParam int cvId) {
+		return this.candidateCvService.deleteGithub(cvId);
+	}
+	
+	@PutMapping("/updateLinkedin")
+	public Result updateLinkedin(@RequestParam String linkedinLink, @RequestParam int cvId) {
+		return this.candidateCvService.updateLinkedin(linkedinLink, cvId);
+	}
+	
+	@PutMapping("/deleteLinkedin")
+	public Result deleteLinkedin(@RequestParam int cvId) {
+		return this.candidateCvService.deleteLinkedin(cvId);
+	}
+	
+	@PutMapping("/updateCoverLetter")
+	public Result updateCoverLetter(@RequestParam String coverLetter, @RequestParam int cvId) {
+		return this.candidateCvService.updateCoverLetter(coverLetter, cvId);
+	}
+	
 }
