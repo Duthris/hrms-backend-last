@@ -31,4 +31,6 @@ public interface CandidateCvService {
 	Result deleteLinkedin(int cvId);
 	
 	Result updateCoverLetter(String coverLetter, int cvId);
+	
+	Result deleteCvAvatar(int id);
 }

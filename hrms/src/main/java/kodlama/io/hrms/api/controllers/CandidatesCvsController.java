@@ -86,4 +86,8 @@ public class CandidatesCvsController {
 		return this.candidateCvService.updateCoverLetter(coverLetter, cvId);
 	}
 	
+	@PostMapping("/deleteCvAvatar")
+	public Result deleteCvAvatar(int id) {
+		return this.candidateCvService.deleteCvAvatar(id);
+	}
 }

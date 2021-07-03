@@ -248,4 +248,13 @@ public class CandidateCvManager implements CandidateCvService {
 		return new SuccessResult("Cover Letter is updated!");
 	}
 
+	@Override
+	public Result deleteCvAvatar(int id) {
+		CandidateCv tempCv = this.candidateCvDao.getOne(id);
+		tempCv.setAvatarLink("https://res.cloudinary.com/duthris/image/upload/v1625270043/j02oe5hmsxsrjjasiymx.jpg");
+		
+		this.candidateCvDao.save(tempCv);
+		return new SuccessResult("Cv Avatar is successfully removed.");
+	}
+
 }
