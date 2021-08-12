@@ -47,7 +47,7 @@ public class CandidatesCvsController {
 	}
 	
 	@GetMapping("/getByCandidateId")
-	public DataResult<List<CandidateCv>> getByCandidateId(@RequestParam int id) {
+	public DataResult<CandidateCv> getByCandidateId(@RequestParam int id) {
 		return this.candidateCvService.getByCandidateId(id);
 	}
 	
@@ -62,32 +62,32 @@ public class CandidatesCvsController {
 	}
 	
 	@PutMapping("/updateGithub")
-	public Result updateGithub(@RequestParam String githubLink, @RequestParam int cvId) {
-		return this.candidateCvService.updateGithub(githubLink, cvId);
+	public Result updateGithub(@RequestParam String githubLink, @RequestParam int candidateId) {
+		return this.candidateCvService.updateGithub(githubLink, candidateId);
 	}
 	
 	@PutMapping("/deleteGithub")
-	public Result deleteGithub(@RequestParam int cvId) {
-		return this.candidateCvService.deleteGithub(cvId);
+	public Result deleteGithub(@RequestParam int candidateId) {
+		return this.candidateCvService.deleteGithub(candidateId);
 	}
 	
 	@PutMapping("/updateLinkedin")
-	public Result updateLinkedin(@RequestParam String linkedinLink, @RequestParam int cvId) {
-		return this.candidateCvService.updateLinkedin(linkedinLink, cvId);
+	public Result updateLinkedin(@RequestParam String linkedinLink, @RequestParam int candidateId) {
+		return this.candidateCvService.updateLinkedin(linkedinLink, candidateId);
 	}
 	
 	@PutMapping("/deleteLinkedin")
-	public Result deleteLinkedin(@RequestParam int cvId) {
-		return this.candidateCvService.deleteLinkedin(cvId);
+	public Result deleteLinkedin(@RequestParam int candidateId) {
+		return this.candidateCvService.deleteLinkedin(candidateId);
 	}
 	
 	@PutMapping("/updateCoverLetter")
-	public Result updateCoverLetter(@RequestParam String coverLetter, @RequestParam int cvId) {
-		return this.candidateCvService.updateCoverLetter(coverLetter, cvId);
+	public Result updateCoverLetter(@RequestParam String coverLetter, @RequestParam int candidateId) {
+		return this.candidateCvService.updateCoverLetter(coverLetter, candidateId);
 	}
 	
 	@PostMapping("/deleteCvAvatar")
-	public Result deleteCvAvatar(int id) {
-		return this.candidateCvService.deleteCvAvatar(id);
+	public Result deleteCvAvatar(int candidateId) {
+		return this.candidateCvService.deleteCvAvatar(candidateId);
 	}
 }

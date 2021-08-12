@@ -98,7 +98,7 @@ public class CandidateLanguageManager implements CandidateLanguageService {
 
 	@Override
 	public DataResult<List<CandidateLanguage>> getByCvId(int cvId) {
-		if (!this.candidateCvDao.existsById(cvId)) {
+		if (!this.candidateDao.existsById(cvId)) {
 			return new ErrorDataResult<List<CandidateLanguage>> ("Invalid Cv Id!");
 		}
 		

@@ -18,19 +18,21 @@ public interface CandidateCvService {
 	
 	Result uploadCvAvatar(int id, MultipartFile multipartFile) throws IOException;
 	
-	DataResult<List<CandidateCv>> getByCandidateId(int id);
+	DataResult<CandidateCv> getByCandidateId(int id);
 	
 	DataResult<CandidateCv> update(CandidateCv candidateCv);
 	
 	DataResult<CandidateCv> getByCvId(int id);
 	
-	Result updateGithub(String githubLink, int cvId);
-	Result deleteGithub(int cvId);
+	Result updateGithub(String githubLink, int candidateId);
+	Result deleteGithub(int candidateId);
 	
-	Result updateLinkedin(String linkedinLink, int cvId);
-	Result deleteLinkedin(int cvId);
+	Result updateLinkedin(String linkedinLink, int candidateId);
+	Result deleteLinkedin(int candidateId);
 	
-	Result updateCoverLetter(String coverLetter, int cvId);
+	Result updateCoverLetter(String coverLetter, int candidateId);
 	
 	Result deleteCvAvatar(int id);
+	
+	Result createEmptyCvAfterRegister(int candidateId);
 }

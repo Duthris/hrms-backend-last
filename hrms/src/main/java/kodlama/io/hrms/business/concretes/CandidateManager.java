@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kodlama.io.hrms.adapters.CandidateCheckService;
+import kodlama.io.hrms.business.abstracts.CandidateCvService;
 import kodlama.io.hrms.business.abstracts.CandidateService;
 import kodlama.io.hrms.business.abstracts.UserActivationService;
 import kodlama.io.hrms.business.abstracts.UserCheckService;
@@ -38,11 +39,12 @@ public class CandidateManager implements CandidateService {
 	private CandidateCheckService candidateCheckService;
 	private UserDao userDao;
 	private UserService userService;
+	private CandidateCvService candidateCvService;
 
 	@Autowired
 	public CandidateManager(CandidateDao candidateDao, UserCheckService userCheckService, 
 			UserActivationService userActivationService, EMailService eMailService, CandidateCheckService candidateCheckService,
-			UserDao userDao, UserService userService) {
+			UserDao userDao, UserService userService, CandidateCvService candidateCvService) {
 		this.candidateDao = candidateDao;
 		this.userCheckService = userCheckService;
 		this.userActivationService = userActivationService;
@@ -50,6 +52,7 @@ public class CandidateManager implements CandidateService {
 		this.candidateCheckService = candidateCheckService;
 		this.userDao = userDao;
 		this.userService = userService;
+		this.candidateCvService = candidateCvService;
 	}
 
 	@Override
@@ -75,14 +78,13 @@ public class CandidateManager implements CandidateService {
 			return new ErrorResult("Invalid E-mail Format!");
 		}
 		
-		if (!candidateCheckService.checkIfRealPerson(candidate)) {
-			return new ErrorResult("Validation Error: Not a Valid Person!");
-		}
+		
 		
 		else {
 			User userToSave = this.userService.add(candidate);
 			
 			this.userActivationService.createCode(new MailVerification(), userToSave.getId());
+			this.candidateCvService.createEmptyCvAfterRegister(candidate.getId());
 			return new SuccessDataResult<Candidate>(this.candidateDao.save(candidate), "Candidate is successfully Added!");
 		}
 	}

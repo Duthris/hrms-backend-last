@@ -16,6 +16,7 @@ import kodlama.io.hrms.core.utilities.results.Result;
 import kodlama.io.hrms.core.utilities.results.SuccessDataResult;
 import kodlama.io.hrms.core.utilities.results.SuccessResult;
 import kodlama.io.hrms.dataAccess.abstracts.CandidateCvDao;
+import kodlama.io.hrms.dataAccess.abstracts.CandidateDao;
 import kodlama.io.hrms.dataAccess.abstracts.CandidateJobExperienceDao;
 import kodlama.io.hrms.dataAccess.abstracts.CandidateLanguageDao;
 import kodlama.io.hrms.dataAccess.abstracts.CandidateSchoolDao;
@@ -36,14 +37,15 @@ public class CandidateCvManager implements CandidateCvService {
 	private CandidateLanguageDao candidateLanguageDao;
 	private CandidateSchoolDao candidateSchoolDao;
 	private CandidateJobExperienceDao candidateJobExperienceDao;
-	private ImageAdapterService ImageAdapterService;
+	private ImageAdapterService imageAdapterService;
+	private CandidateDao candidateDao;
 
 	
 	@Autowired
 	public CandidateCvManager(CandidateCvDao candidateCvDao, CandidateTalentDao candidateTalentDao,
 			CandidateLanguageDao candidateLanguageDao, CandidateSchoolDao candidateSchoolDao,
-			CandidateJobExperienceDao candidateJobExperienceDao,
-			kodlama.io.hrms.core.adapters.abstracts.ImageAdapterService imageAdapterService) 
+			CandidateJobExperienceDao candidateJobExperienceDao,ImageAdapterService imageAdapterService, 
+			CandidateDao candidateDao) 
 	
 	{
 		this.candidateCvDao = candidateCvDao;
@@ -51,7 +53,8 @@ public class CandidateCvManager implements CandidateCvService {
 		this.candidateLanguageDao = candidateLanguageDao;
 		this.candidateSchoolDao = candidateSchoolDao;
 		this.candidateJobExperienceDao = candidateJobExperienceDao;
-		ImageAdapterService = imageAdapterService;
+		this.imageAdapterService = imageAdapterService;
+		this.candidateDao = candidateDao;
 	}
 
 	@Override
@@ -105,7 +108,7 @@ public class CandidateCvManager implements CandidateCvService {
 
 	@Override
 	public Result uploadCvAvatar(int id, MultipartFile multipartFile) throws IOException {
-		var upload = this.ImageAdapterService.upload(multipartFile);
+		var upload = this.imageAdapterService.upload(multipartFile);
 		var link = upload.getData().get("url");
 		
 		CandidateCv tempCv = this.candidateCvDao.getOne(id);
@@ -116,9 +119,9 @@ public class CandidateCvManager implements CandidateCvService {
 	}
 
 	@Override
-	public DataResult<List<CandidateCv>> getByCandidateId(int id) {
-		return new SuccessDataResult<List<CandidateCv>>
-		(this.candidateCvDao.getByCandidateId(id));
+	public DataResult<CandidateCv> getByCandidateId(int id) {
+		return new SuccessDataResult<CandidateCv>
+		(this.candidateCvDao.findByCandidateId(id));
 	}
 
 	@Override
@@ -176,16 +179,16 @@ public class CandidateCvManager implements CandidateCvService {
 	}
 
 	@Override
-	public Result updateGithub(String githubLink, int cvId) {
-		if (!this.candidateCvDao.existsById(cvId)) {
-			return new ErrorResult("Invalid Cv Id");
+	public Result updateGithub(String githubLink, int candidateId) {
+		if (!this.candidateDao.existsById(candidateId)) {
+			return new ErrorResult("Invalid ID");
 		}
 		
 		else if (!githubLink.startsWith("https://github.com")) {
 			return new ErrorResult("Invalid Github address. Github address must be in https://github.com/nick format");
 		}
 		
-		CandidateCv cv = this.candidateCvDao.getOne(cvId);
+		CandidateCv cv = this.candidateCvDao.findByCandidateId(candidateId);
 		cv.setGithubLink(githubLink);
 		
 		this.candidateCvDao.save(cv);
@@ -193,12 +196,12 @@ public class CandidateCvManager implements CandidateCvService {
 	}
 
 	@Override
-	public Result deleteGithub(int cvId) {
-		if (!this.candidateCvDao.existsById(cvId)) {
-			return new ErrorResult("Invalid Cv Id");
+	public Result deleteGithub(int candidateId) {
+		if (!this.candidateDao.existsById(candidateId)) {
+			return new ErrorResult("Invalid Id");
 		}
 		
-		CandidateCv cv = this.candidateCvDao.getOne(cvId);
+		CandidateCv cv = this.candidateCvDao.findByCandidateId(candidateId);
 		cv.setGithubLink(null);
 		
 		this.candidateCvDao.save(cv);
@@ -206,8 +209,8 @@ public class CandidateCvManager implements CandidateCvService {
 	}
 
 	@Override
-	public Result updateLinkedin(String linkedinLink, int cvId) {
-		if (!this.candidateCvDao.existsById(cvId)) {
+	public Result updateLinkedin(String linkedinLink, int candidateId) {
+		if (!this.candidateDao.existsById(candidateId)) {
 			return new ErrorResult("Invalid Cv Id");
 		}
 		
@@ -215,7 +218,7 @@ public class CandidateCvManager implements CandidateCvService {
 			return new ErrorResult("Invalid Linked.in address. Linked.in address must be in https://linked.in/nick format");
 		}
 		
-		CandidateCv cv = this.candidateCvDao.getOne(cvId);
+		CandidateCv cv = this.candidateCvDao.findByCandidateId(candidateId);
 		cv.setLinkedinLink(linkedinLink);
 		
 		this.candidateCvDao.save(cv);
@@ -223,12 +226,12 @@ public class CandidateCvManager implements CandidateCvService {
 	}
 
 	@Override
-	public Result deleteLinkedin(int cvId) {
-		if (!this.candidateCvDao.existsById(cvId)) {
-			return new ErrorResult("Invalid Cv Id");
+	public Result deleteLinkedin(int candidateId) {
+		if (!this.candidateDao.existsById(candidateId)) {
+			return new ErrorResult("Invalid Id");
 		}
 		
-		CandidateCv cv = this.candidateCvDao.getOne(cvId);
+		CandidateCv cv = this.candidateCvDao.findByCandidateId(candidateId);
 		cv.setLinkedinLink(null);
 		
 		this.candidateCvDao.save(cv);
@@ -236,12 +239,12 @@ public class CandidateCvManager implements CandidateCvService {
 	}
 
 	@Override
-	public Result updateCoverLetter(String coverLetter, int cvId) {
-		if (!this.candidateCvDao.existsById(cvId)) {
+	public Result updateCoverLetter(String coverLetter, int candidateId) {
+		if (!this.candidateDao.existsById(candidateId)) {
 			return new ErrorResult("Invalid Cv Id");
 		}
 		
-		CandidateCv cv = this.candidateCvDao.getOne(cvId);
+		CandidateCv cv = this.candidateCvDao.findByCandidateId(candidateId);
 		cv.setCoverLetter(coverLetter);
 		
 		this.candidateCvDao.save(cv);
@@ -250,11 +253,30 @@ public class CandidateCvManager implements CandidateCvService {
 
 	@Override
 	public Result deleteCvAvatar(int id) {
-		CandidateCv tempCv = this.candidateCvDao.getOne(id);
+		CandidateCv tempCv = this.candidateCvDao.findByCandidateId(id);
 		tempCv.setAvatarLink("https://res.cloudinary.com/duthris/image/upload/v1625270043/j02oe5hmsxsrjjasiymx.jpg");
 		
 		this.candidateCvDao.save(tempCv);
 		return new SuccessResult("Cv Avatar is successfully removed.");
+	}
+
+	@Override
+	public Result createEmptyCvAfterRegister(int candidateId) {
+		CandidateCv tempCv = new CandidateCv();
+		
+		tempCv.setCandidate(this.candidateDao.getOne(candidateId));
+		tempCv.setAvatarLink("https://res.cloudinary.com/duthris/image/upload/v1625270043/j02oe5hmsxsrjjasiymx.jpg");
+		tempCv.setCoverLetter(null);
+		tempCv.setGithubLink(null);
+		tempCv.setJobExperiences(null);
+		tempCv.setLanguages(null);
+		tempCv.setLinkedinLink(null);
+		tempCv.setSchools(null);
+		tempCv.setTalents(null);
+		tempCv.setActive(true);
+		
+		this.candidateCvDao.save(tempCv);
+		return new SuccessResult("Empty cv is created for registered user!");
 	}
 
 }

@@ -74,7 +74,7 @@ public class CandidateSchoolManager implements CandidateSchoolService {
 
 	@Override
 	public Result add(SchoolAddDto schoolAddDto) {
-		if (!this.candidateCvDao.existsById(schoolAddDto.getCvId())) {
+		if (!this.candidateDao.existsById(schoolAddDto.getCvId())) {
 			return new ErrorResult("Invalid cv id!");
 		}
 		
@@ -91,7 +91,7 @@ public class CandidateSchoolManager implements CandidateSchoolService {
 		}
 		
 		CandidateSchool school = new CandidateSchool();
-		school.setCandidateCv(this.candidateCvDao.getOne(schoolAddDto.getCvId()));
+		school.setCandidateCv(this.candidateCvDao.findByCandidateId(schoolAddDto.getCvId()));
 		school.setSchoolName(schoolAddDto.getSchoolName());
 		school.setDepartment(schoolAddDto.getDepartment());
 		school.setStartingDate(schoolAddDto.getStartingDate());

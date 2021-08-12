@@ -12,6 +12,7 @@ import kodlama.io.hrms.core.utilities.results.Result;
 import kodlama.io.hrms.core.utilities.results.SuccessDataResult;
 import kodlama.io.hrms.core.utilities.results.SuccessResult;
 import kodlama.io.hrms.dataAccess.abstracts.CandidateCvDao;
+import kodlama.io.hrms.dataAccess.abstracts.CandidateDao;
 import kodlama.io.hrms.dataAccess.abstracts.CandidateJobExperienceDao;
 import kodlama.io.hrms.entities.concretes.CandidateJobExperience;
 import kodlama.io.hrms.entities.concretes.JobPosition;
@@ -22,11 +23,14 @@ public class CandidateJobExperienceManager implements CandidateJobExperienceServ
 	
 	private CandidateJobExperienceDao candidateJobExperienceDao;
 	private CandidateCvDao candidateCvDao;
+	private CandidateDao candidateDao;
 	
 	
-	public CandidateJobExperienceManager(CandidateJobExperienceDao candidateJobExperienceDao,CandidateCvDao candidateCvDao) {
+	public CandidateJobExperienceManager(CandidateJobExperienceDao candidateJobExperienceDao, 
+			CandidateCvDao candidateCvDao, CandidateDao candidateDao) {
 		this.candidateJobExperienceDao = candidateJobExperienceDao;
 		this.candidateCvDao = candidateCvDao;
+		this.candidateDao = candidateDao;
 	}
 
 
@@ -53,11 +57,9 @@ public class CandidateJobExperienceManager implements CandidateJobExperienceServ
 
 	@Override
 	public Result add(JobExperienceAddDto jobExperienceAddDto) {
-		if (!this.candidateCvDao.existsById(jobExperienceAddDto.getCvId())) {
-			return new ErrorResult("Invalid Cv Id!");
-		}
 		
-		else if (jobExperienceAddDto.getCompanyName().length()<=1) {
+		
+		if (jobExperienceAddDto.getCompanyName().length()<=1) {
 			return new ErrorResult("Company name must be longer than 1 character!");
 		}
 		
@@ -66,7 +68,7 @@ public class CandidateJobExperienceManager implements CandidateJobExperienceServ
 		}
 		
 		CandidateJobExperience experience = new CandidateJobExperience();
-		experience.setCandidateCv(this.candidateCvDao.getOne(jobExperienceAddDto.getCvId()));
+		experience.setCandidateCv(this.candidateCvDao.findByCandidateId(jobExperienceAddDto.getCvId()));
 		experience.setCompanyName(jobExperienceAddDto.getCompanyName());
 		experience.setStartingDate(jobExperienceAddDto.getStartingDate());
 		experience.setEndDate(jobExperienceAddDto.getEndDate());
